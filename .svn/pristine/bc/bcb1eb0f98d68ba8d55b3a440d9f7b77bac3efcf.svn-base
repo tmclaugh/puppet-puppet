@@ -1,0 +1,7 @@
+# $Id$
+
+class svn::client {
+	package { "subversion":
+		ensure => installed
+	}
+}

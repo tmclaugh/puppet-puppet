@@ -1,0 +1,16 @@
+# $Id$
+
+class apache::mod_ssl ($sslcertfile, $sslkeyfile, $sslcertchainfile) {
+	package { "mod_ssl":
+		ensure => present,
+		notify => Service["httpd_service"]
+	}
+
+	file { "/etc/httpd/conf.d/ssl.conf" :
+		owner => "root",
+		group => "root",
+		mode => "644",
+		content => template("apache/ssl.conf.erb"),
+		notify => Service["httpd_service"]
+	}
+}

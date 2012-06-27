@@ -1,0 +1,65 @@
+# $Id$
+
+class svn::viewvc {
+	package { "viewvc-httpd" :
+		ensure => installed,
+		require => Package["httpd"]
+	}
+	
+	file { "/etc/viewvc/viewvc.conf" :
+		owner => root,
+		group => root,
+		mode => 644,
+		require => Package["viewvc-httpd"],
+	}
+
+	file { "/etc/httpd/conf.d/viewvc.conf" :
+		owner => root,
+		group => root,
+		mode => 644,
+		require => Package["viewvc-httpd"],
+		notify => Service["httpd_service"]
+	}
+
+	line { "viewvc_root_as_url_component_uncomment" :
+		file => "/etc/viewvc/viewvc.conf",
+		line =>"root_as_url_component",
+		ensure => "uncomment",
+		require => File["/etc/viewvc/viewvc.conf"],
+	}
+	line { "viewvc_allowed_views_uncomment" :
+		file => "/etc/viewvc/viewvc.conf",
+		line =>"allowed_views",
+		ensure => "uncomment",
+		require => File["/etc/viewvc/viewvc.conf"],
+	}
+	
+	line { "viewvc_svn_roots_uncomment" :
+		file => "/etc/viewvc/viewvc.conf",
+		line =>"svn_roots",
+		ensure => "uncomment",
+		require => File["/etc/viewvc/viewvc.conf"],
+	}
+
+	replace { "viewvc_root_as_url_component_set" :
+		file => "/etc/viewvc/viewvc.conf",
+		pattern => "root_as_url_component.*",
+		replacement => "root_as_url_component = 1",
+		require => Line["viewvc_root_as_url_component_uncomment"]
+	}
+	
+	replace { "viewvc_allowed_views_set" :
+		file => "/etc/viewvc/viewvc.conf",
+		pattern => "allowed_views.*",
+		replacement => "allowed_views = annotate, diff, markup, roots, co",
+		require => Line["viewvc_allowed_views_uncomment"]
+	}
+
+	replace { "viewvc_allow_from_any" :
+		file => "/etc/httpd/conf.d/viewvc.conf",
+		pattern => "Allow from 127.0.0.1",
+		replacement => "Allow from all",
+		require => File["/etc/httpd/conf.d/viewvc.conf"],
+		notify => Service["httpd_service"]
+	}	
+}

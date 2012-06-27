@@ -1,0 +1,5 @@
+# $Id$
+#
+# All proxy definitions go in /etc/httpd/proxy.d/
+
+Include proxy.d/*.conf

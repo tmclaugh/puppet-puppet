@@ -1,0 +1,58 @@
+#!/bin/sh
+#
+# $Id$
+#
+# requires dialog package to be installed.
+
+HOSTNAME_FILE="/etc/sysconfig/network"
+ETHCFG_FILE="/etc/sysconfig/network-scripts/ifcfg-eth0"
+
+# Get hostname from user
+tmp_file=$(mktemp)
+trap "rm -f $tmp_file" 0 1 2 5 15
+dialog --title "Hostname" --clear --inputbox "Please enter hostname." 0 48 2> $tmp_file
+
+if [ ! -z $HOSTNAME ]; then
+	# Set hostname variables
+	HOSTNAME=$(cat $tmp_file)
+
+	# Clear existing hostname settings.
+	sed -i '/^HOSTNAME/d' $HOSTNAME_FILE
+	sed -i '/^DHCP_HOSTNAME/d' $ETHCFG_FILE
+	# XXX: clear /etc/hosts of all but comments and localhost entries.
+	sed -i '/^\(#\|:\|127\)/!d' /etc/hosts
+
+	# Fill in missing localhost entries if there are any.
+	localhost='localhost'
+	localhost_fqdn='localhost.localdomain'
+	localhost4='localhost4'
+	localhost4_fqdn='localhost4.localdomain4'
+	localhost6='localhost6'
+	localhost6_fqdn='localhost6.localdomain6'
+
+	# XXX: Order of entries added to hosts file matches the default
+	# order on a new system.  Note the difference between 5 and 6.
+	# I did it this way just to keep things the same.
+	if ! egrep -q "^127\.0\.0\.1\s" /etc/hosts; then
+		if grep -q "6." /etc/redhat-release; then
+			echo -e "127.0.0.1\t${localhost} ${localhost_fqdn} ${localhost4} ${localhost4_fqdn}" >> /etc/hosts
+		else
+			echo -e "127.0.0.1\t${localhost_fqdn} ${localhost}" >> /etc/hosts
+		fi
+	fi
+
+	if ! egrep -q "^::1\s" /etc/hosts; then
+		if grep -q "6." /etc/redhat-release; then
+			echo -e "::1\t\t${localhost} ${localhost_fqdn} ${localhost6_fqdn} ${localhost6}" >> /etc/hosts
+		else
+			echo -e "::1\t\t${localhost6_fqdn} ${localhost6}" >> /etc/hosts
+		fi
+	fi
+
+	# Set hostname
+	hostname $HOSTNAME
+	echo "HOSTNAME=$HOSTNAME" >> $HOSTNAME_FILE
+	echo "DHCP_HOSTNAME=$HOSTNAME" >> $ETHCFG_FILE
+
+	service network restart
+fi

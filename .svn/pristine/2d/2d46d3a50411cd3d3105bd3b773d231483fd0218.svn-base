@@ -1,0 +1,20 @@
+# $Id$
+
+class straycat::os::linux::dhclient {
+	if $::operatingsystem == 'centos' {
+		if $::operatingsystemrelease >= 6 { 
+			$dhclient_exit_hooks = "/etc/dhcp/dhclient-exit-hooks"
+		} else {
+			$dhclient_exit_hooks = "/etc/dhclient-exit-hooks"
+		}
+	} else {
+		$dhclient_exit_hooks = "/etc/dhclient-exit-hooks"
+	}
+	
+	file { $dhclient_exit_hooks :
+		owner => root,
+		group => root,
+		mode => 755,
+		source => "puppet:///modules/straycat/dhclient-exit-hooks",
+	}
+}

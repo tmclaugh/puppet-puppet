@@ -1,0 +1,18 @@
+# $Id$
+
+class sendmail::local ($smarthost) {
+	include sendmail::common
+	
+	service { "sendmail" :
+		ensure => true,
+		enable => true,
+		subscribe => Exec["make_sendmail_cf"],
+	}
+	
+	exec { "smarthost" :
+		command => "sed -i \"s/.*define.*SMART_HOST.*dnl/define\\(\\`SMART_HOST\', \\`$smarthost\'\\)dnl/\" $sendmail::params::sendmail_mc",
+		unless => "grep -Exqe \"^define.*SMART_HOST.*$smarthost.*\"  $sendmail::params::sendmail_mc",
+		require => File[$sendmail::params::sendmail_mc],
+		notify => Exec["make_sendmail_cf"]
+	}
+}

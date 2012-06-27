@@ -1,0 +1,8 @@
+# Define the users who should have root ksu ability.
+
+class straycat::sec::k5login::root {
+	k5login{'/root/.k5login':
+		ensure => present,
+		principals => ['tom/root@STRAYCAT.DHS.ORG']
+	}
+}

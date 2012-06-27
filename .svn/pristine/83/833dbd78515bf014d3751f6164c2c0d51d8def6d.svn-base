@@ -1,0 +1,34 @@
+# $Id$
+
+# See https://github.com/windowsrefund/puppet-sudoers for an
+# alternative module.
+
+class sudo {
+
+	$sudoers = "/etc/sudoers"
+	package { "sudo" :
+		ensure => present
+	}
+
+	file { $sudoers :
+		owner => "root",
+		group => "root",
+		mode => 440,
+		require => Package["sudo"],
+	}
+
+	file { "/etc/sudoers.d":
+		ensure => directory,
+		recurse => true,
+		owner => "root",
+		group => "root",
+		mode => 0755,
+	}
+
+	append_if_no_match { "inc_sudoers_dir" :
+		file => $sudoers,
+		line => "\n#includedir /etc/sudoers.d",
+		match => "#includedir.*/etc/sudoers.d",
+		require => [ File[$sudoers], File["/etc/sudoers.d"] ],
+	}
+}

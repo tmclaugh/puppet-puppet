@@ -1,0 +1,9 @@
+# $Id$
+
+class straycat {
+	include straycat::params
+	
+	if $::kernel == "Linux" {
+		include straycat::os::linux
+	}
+}

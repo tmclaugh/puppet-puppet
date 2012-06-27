@@ -1,0 +1,19 @@
+# $Id$
+
+class straycat::sec::os {
+	case $::operatingsystem {
+		'centos' : { include straycat::sec::os::centos }
+	}
+}
+
+class straycat::sec::os::centos {
+	$version_split = split($::operatingsystemrelease, '[.]')
+	$mver = $version_split[0]
+	if $mver == 6 {
+		include straycat::sec::os::centos6
+	} elsif $mver == 5 {
+		include straycat::sec::os::centos5
+	} else {
+		notify { "Unknown CentOS major version release: $mver":}
+	}
+}

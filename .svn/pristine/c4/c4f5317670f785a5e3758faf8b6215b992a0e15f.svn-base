@@ -1,0 +1,7 @@
+# This is a centrally managed file and changes will be overwritten!
+#
+# $Id$
+#
+<% userslist.each do |val| -%>
+<%= val %>
+<% end -%>

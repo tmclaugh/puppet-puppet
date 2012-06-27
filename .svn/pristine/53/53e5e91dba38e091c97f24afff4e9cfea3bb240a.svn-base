@@ -1,0 +1,30 @@
+# $Id$
+
+class sendmail {
+	include sendmail::params
+	
+	package { "sendmail" :
+		ensure => installed,
+	}
+
+	file { $sendmail::params::sendmail_mc :
+		owner => 'root',
+		group => 'root',
+		mode => '0644',
+		require => Package["sendmail"],
+	}
+
+	exec { "make_sendmail_cf" :
+		command => 'make sendmail.cf',
+		cwd => '/etc/mail',
+		refreshonly => true,
+		subscribe => [Exec["smart_host"], File["$sendmail::params::sendmail_mc"]]
+	}
+	
+	service { "sendmail" :
+		ensure => true,
+		enable => true,
+		subscribe => Exec["make_sendmail_cf"],
+	}
+	
+}

@@ -1,0 +1,73 @@
+Certificate:
+    Data:
+        Version: 1 (0x0)
+        Serial Number:
+            82:eb:84:fa:a8:1a:cc:fe
+        Signature Algorithm: md5WithRSAEncryption
+        Issuer: C=US, ST=Massachusetts, L=Needham, O=Straycat Network, OU=Straycat Certificate Authority, CN=Straycat CA/emailAddress=root@straycat.dhs.org
+        Validity
+            Not Before: Apr 30 18:39:56 2007 GMT
+            Not After : Apr 27 18:39:56 2017 GMT
+        Subject: C=US, ST=Massachusetts, L=Needham, O=Straycat Network, OU=Straycat Certificate Authority, CN=Straycat CA/emailAddress=root@straycat.dhs.org
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+            RSA Public Key: (2048 bit)
+                Modulus (2048 bit):
+                    00:eb:00:45:82:6f:86:ac:98:da:52:ad:80:d3:cf:
+                    51:d0:da:8a:78:05:c7:b5:b0:99:c6:48:5c:ec:84:
+                    91:cc:5c:38:20:1f:f7:35:65:b2:ff:6e:8b:1c:42:
+                    ae:27:f1:f6:5b:e9:2e:48:de:9f:91:5b:2f:c4:8e:
+                    44:12:a3:e9:60:a0:a8:81:48:2a:24:86:c5:64:84:
+                    c2:ca:de:e7:e1:1e:75:fe:b5:d0:bd:dd:17:a3:23:
+                    18:bc:d8:a1:ca:c5:ae:95:b0:fc:78:7b:8b:e7:74:
+                    2d:bf:c0:2b:cd:8e:ce:7a:59:ac:fd:66:77:1d:0f:
+                    5b:73:93:b8:dd:78:b5:c8:80:7c:52:20:dc:85:e8:
+                    1b:6b:46:a1:2e:91:46:07:b4:95:bf:d0:3f:0c:bc:
+                    36:c4:53:a7:91:4a:b1:59:ae:b4:ac:31:2f:3a:02:
+                    86:02:f8:7f:05:a2:1a:fc:b3:08:06:81:f0:c0:98:
+                    54:e6:37:20:92:12:a1:30:20:e1:2e:57:87:f3:84:
+                    f4:46:d2:91:10:76:c8:e9:b0:5a:a9:0f:04:53:9f:
+                    64:6f:6f:0f:c7:1f:90:bd:e4:f9:86:84:95:01:73:
+                    d2:b5:1e:5f:ee:d6:b2:e4:82:58:be:e5:51:12:66:
+                    1d:51:08:8c:bf:31:99:4f:80:00:6c:7d:ff:77:e0:
+                    bd:ed
+                Exponent: 65537 (0x10001)
+    Signature Algorithm: md5WithRSAEncryption
+        7f:61:6c:04:c6:1e:ab:de:33:96:3f:16:2d:c3:41:63:cb:dd:
+        c7:63:0f:92:3d:44:2a:ba:db:68:fc:7b:06:7c:15:ef:91:b7:
+        0b:38:d8:5b:fd:b2:27:45:db:4c:47:b8:c7:1c:9d:81:2c:ed:
+        78:9b:0a:c7:c0:5c:e2:4d:a3:74:b6:bb:02:17:35:60:4c:f7:
+        cb:21:64:e3:cb:31:19:05:00:78:1b:39:46:09:73:78:59:a5:
+        1b:da:5f:35:41:33:ba:7a:95:b8:a5:6c:ea:e8:19:c7:bf:23:
+        9f:9d:13:b4:bd:8d:d9:3c:81:ac:d7:dc:c6:6a:e1:36:70:d8:
+        29:d0:92:02:f6:0c:67:73:a3:54:12:57:f2:20:7a:f7:99:40:
+        f2:cd:3a:34:e9:6b:a1:5b:32:b2:22:a1:d1:7c:20:81:ad:00:
+        10:b6:bd:77:34:e2:5c:5a:68:25:85:84:6e:fa:e9:3f:c2:c0:
+        27:c4:67:71:b4:d7:4e:d5:83:98:fb:2f:97:b5:a4:1e:30:f8:
+        98:11:d0:57:ac:50:cc:54:c7:e5:c0:46:1d:44:8a:c0:76:58:
+        df:34:90:1b:d5:2a:07:05:7d:7a:d6:53:f7:e7:5a:f9:b3:00:
+        5a:72:e6:6c:56:60:27:74:0b:09:ab:bf:c8:b9:88:1f:19:bd:
+        1c:01:94:87
+-----BEGIN CERTIFICATE-----
+MIID7DCCAtQCCQCC64T6qBrM/jANBgkqhkiG9w0BAQQFADCBtzELMAkGA1UEBhMC
+VVMxFjAUBgNVBAgTDU1hc3NhY2h1c2V0dHMxEDAOBgNVBAcTB05lZWRoYW0xGTAX
+BgNVBAoTEFN0cmF5Y2F0IE5ldHdvcmsxJzAlBgNVBAsTHlN0cmF5Y2F0IENlcnRp
+ZmljYXRlIEF1dGhvcml0eTEUMBIGA1UEAxMLU3RyYXljYXQgQ0ExJDAiBgkqhkiG
+9w0BCQEWFXJvb3RAc3RyYXljYXQuZGhzLm9yZzAeFw0wNzA0MzAxODM5NTZaFw0x
+NzA0MjcxODM5NTZaMIG3MQswCQYDVQQGEwJVUzEWMBQGA1UECBMNTWFzc2FjaHVz
+ZXR0czEQMA4GA1UEBxMHTmVlZGhhbTEZMBcGA1UEChMQU3RyYXljYXQgTmV0d29y
+azEnMCUGA1UECxMeU3RyYXljYXQgQ2VydGlmaWNhdGUgQXV0aG9yaXR5MRQwEgYD
+VQQDEwtTdHJheWNhdCBDQTEkMCIGCSqGSIb3DQEJARYVcm9vdEBzdHJheWNhdC5k
+aHMub3JnMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6wBFgm+GrJja
+Uq2A089R0NqKeAXHtbCZxkhc7ISRzFw4IB/3NWWy/26LHEKuJ/H2W+kuSN6fkVsv
+xI5EEqPpYKCogUgqJIbFZITCyt7n4R51/rXQvd0XoyMYvNihysWulbD8eHuL53Qt
+v8ArzY7Oelms/WZ3HQ9bc5O43Xi1yIB8UiDchegba0ahLpFGB7SVv9A/DLw2xFOn
+kUqxWa60rDEvOgKGAvh/BaIa/LMIBoHwwJhU5jcgkhKhMCDhLleH84T0RtKREHbI
+6bBaqQ8EU59kb28Pxx+QveT5hoSVAXPStR5f7tay5IJYvuVREmYdUQiMvzGZT4AA
+bH3/d+C97QIDAQABMA0GCSqGSIb3DQEBBAUAA4IBAQB/YWwExh6r3jOWPxYtw0Fj
+y93HYw+SPUQqutto/HsGfBXvkbcLONhb/bInRdtMR7jHHJ2BLO14mwrHwFziTaN0
+trsCFzVgTPfLIWTjyzEZBQB4GzlGCXN4WaUb2l81QTO6epW4pWzq6BnHvyOfnRO0
+vY3ZPIGs19zGauE2cNgp0JIC9gxnc6NUElfyIHr3mUDyzTo06WuhWzKyIqHRfCCB
+rQAQtr13NOJcWmglhYRu+uk/wsAnxGdxtNdO1YOY+y+XtaQeMPiYEdBXrFDMVMfl
+wEYdRIrAdljfNJAb1SoHBX161lP351r5swBacuZsVmAndAsJq7/IuYgfGb0cAZSH
+-----END CERTIFICATE-----

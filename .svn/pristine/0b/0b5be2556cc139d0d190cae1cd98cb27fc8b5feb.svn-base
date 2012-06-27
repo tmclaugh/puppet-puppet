@@ -1,0 +1,46 @@
+# $Id$
+
+# XXX: This should take a list of ntp_servers at some point.
+class ntp::client ($ntp_server) {
+	package { "ntp" :
+		ensure => installed,
+	}
+
+	file { "/etc/ntp/step-tickers" :
+		owner => "root",
+		group => "root",
+		mode => 644,
+		require => Package["ntp"],
+	}
+
+	# We should probably just use our own file to always ensure that
+	# ntpd is configured properly.
+	file { "/etc/ntp.conf" :
+		owner => "root",
+		group => "root",
+		mode => 644,
+		require => Package["ntp"],
+	}
+
+	append_if_no_such_line { "step_ticker" :
+		file => "/etc/ntp/step-tickers",
+		line => $ntp_server,
+		require => File["/etc/ntp/step-tickers"]
+	}
+
+	append_if_no_such_line { "ntp_server" :
+		file => "/etc/ntp.conf",
+		line => "server $ntp_server",
+		require => File["/etc/ntp.conf"],
+	}
+
+	#
+	service { "ntpd" :
+		enable => true,
+		ensure => true,
+		# XXX :the File["/etc/ntp.conf"] resource on dictates that
+		# the file exists.  It's Append_if_no_such_line["ntp_server"]
+		# that ensures the file is correct.
+		subscribe => [ Append_if_no_such_line["ntp_server"], Package["ntp"] ],
+	}
+}

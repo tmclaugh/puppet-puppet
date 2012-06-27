@@ -1,0 +1,6 @@
+# $Id$
+
+class postfix::params {
+	$master_cf = "/etc/postfix/master.cf"
+	$main_cf = "/etc/postfix/main.cf"
+}

@@ -1,0 +1,15 @@
+# Set up SSH key management.  We use a central ssh-key directory so that
+# the user does not need to exist beforehand.
+
+class straycat::sec::sshkeys {
+	include ssh::server
+
+	file {'/etc/ssh-keys':
+		ensure => 'directory',
+		owner => 'root',
+		group => 'root',
+		mode => '0755'
+	}
+	
+	ssh::server::config_value {'AuthorizedKeysFile': value => '/etc/ssh-keys/%u'}
+}

@@ -1,0 +1,21 @@
+# $Id$
+
+class straycat::sec::os::centos6 inherits straycat::sec::os::centos5 {
+	# XXX: Only difference between stock files is system-auth-ac
+	# supports pam_fprintd.so for auth.  We just won't support that
+	# in our builds and that makes life simple.
+	file { "/etc/pam.d/password-auth-ac" :
+		owner => root,
+		group => root,
+		mode => 644,
+		source => "puppet:///modules/straycat/system-auth-ac",
+	}
+
+	file { "/etc/pam.d/password-auth" : 
+		ensure => symlink,
+		target => "/etc/pam.d/password-auth-ac",
+		require => File["/etc/pam.d/password-auth-ac"]
+	}
+	
+}
+

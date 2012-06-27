@@ -1,0 +1,66 @@
+# $Id$
+<% if nonssl %>
+<VirtualHost <%= ip %>:80>
+	ServerName <%= name %>
+	ServerAlias <%= name %>
+	ProxyPass / http://<%= intname %>/
+	ProxyPassReverse / http://<%= intname %>/
+
+<% if rewriterule %>
+	RewriteEngine on
+<% if rewritecond %>	RewriteCond <%= rewritecond %><% end %>
+	RewriteRule <%= rewriterule %>
+<% end %>
+
+	ErrorLog logs/<%= name %>-error_log
+	TransferLog logs/<%= name %>-access_log
+	LogLevel warn
+
+<% if options %>	Options <%= options %><% end %>
+	
+</VirtualHost>
+<% end %>
+
+<% if ssl %>
+<VirtualHost <%= ip %>:443>
+	ServerName <%= name %>
+	# XXX: This shoukld be able to handle an array
+	ServerAlias <%= name %>
+	ProxyPass / https://<%= intname %>/
+	ProxyPassReverse / https://<%= intname %>/
+
+<% if rewriterulessl %>
+	RewriteEngine on
+<% if rewritecondssl %>	RewriteCond <%= rewritecondssl %><% end %>
+	RewriteRule <%= rewriterulessl %>
+<% end %>
+
+	ErrorLog logs/<%= name %>-ssl_error_log
+	TransferLog logs/<%= name %>-ssl_access_log
+	CustomLog logs/<%= name %>-ssl_request_log \
+		"%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"
+	LogLevel warn
+
+<% if optionsssl %>	Options  <%= optionsssl %><% end %>
+
+	SSLEngine on
+	SSLProxyEngine on
+	SSLProtocol all -SSLv2
+	SSLCipherSuite ALL:!ADH:!EXPORT:!SSLv2:RC4+RSA:+HIGH:+MEDIUM:+LOW
+	SSLCertificateFile <%= sslcert %>
+	SSLCertificateKeyFile <%= sslkey %>
+	SSLCertificateChainFile <%= sslchain %>
+
+	<Files ~ "\.(cgi|shtml|phtml|php3?)$">
+		SSLOptions +StdEnvVars
+	</Files>
+	<Directory "/var/www/cgi-bin">
+		SSLOptions +StdEnvVars
+	</Directory>
+
+	SetEnvIf User-Agent ".*MSIE.*" \
+		nokeepalive ssl-unclean-shutdown \
+		downgrade-1.0 force-response-1.0
+
+</VirtualHost>
+<% end %>

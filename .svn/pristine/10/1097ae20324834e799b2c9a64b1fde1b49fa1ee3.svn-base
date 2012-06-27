@@ -1,0 +1,22 @@
+# $Id$
+class nagios::nrpe {
+	package { "nrpe" :
+		ensure => installed,
+		require => Class["nagios::client"]
+	}
+
+	file { "/etc/nagios/nrpe.cfg" :
+		owner => "root",
+		group => "root",
+		mode => 644,
+		source => "puppet:///modules/nagios/nrpe.cfg",
+		require => Package["nrpe"],
+	}
+
+	service { "nrpe_svc" :
+		name => "nrpe",
+		enable => true,
+		ensure => true,
+		subscribe => [File["/etc/nagios/nrpe.cfg"]],
+	}
+}

@@ -1,0 +1,45 @@
+#!/bin/sh
+#
+# $Id$
+#
+# Check if disk is a VMDK and if there is free space on disk expand the
+# VG and '/' LV to use it.
+#
+
+DISK=/dev/sda
+TOTAL_CYL=$(fdisk -l ${DISK} | grep -E 'cylinders$' | awk '{print $5}')
+END_CYL=$(fdisk -l ${DISK} | egrep "^${DISK}" | tail -n 1 | awk '{print $3}')
+VG=vg00
+# LV naming convention was changed in our 6.x builds
+grep -E '6\..' /etc/redhat-release
+if [ "$?" = "0" ]; then
+	LV=root
+else
+	LV=lv_root
+fi
+
+# Check if $DISK is a VMDK
+parted ${DISK} print | grep 'VMware'
+if [ "$?" = "0" ]; then
+	if [ $TOTAL_CYL -gt $END_CYL ]; then
+		echo "Expanding '/' logical volume to fill extra disk space...."
+		PREV_END=$(parted ${DISK} print | grep -E '^[[:space:]]2'| awk '{print $3}')
+		parted $DISK --script -- mkpart primary $PREV_END -1
+		
+		# XXX: in 6 you can no longer have partprobe, parted, or
+		# fdisk cause the kernel to reread the partition table
+		# While the disk has partitions in use.
+		#
+		# https://access.redhat.com/knowledge/solutions/57542
+		if grep -E '6\..' /etc/redhat-release; then
+			partx -a -v $DISK 2>/dev/null 
+		fi
+		NEW_PART=$(fdisk -l ${DISK}| tail -n 1 | awk '{print $1}')
+		NEW_PART_NUM=${NEW_PART:$(expr ${#NEW_PART} - 1)}
+		parted $DISK --script -- set $NEW_PART_NUM lvm on
+		pvcreate $NEW_PART
+		vgextend $VG $NEW_PART
+		lvextend /dev/mapper/${VG}-${LV} $NEW_PART
+		resize2fs /dev/mapper/${VG}-${LV}
+	fi
+fi

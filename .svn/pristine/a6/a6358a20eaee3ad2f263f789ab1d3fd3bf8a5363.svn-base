@@ -1,0 +1,3 @@
+# $Id$
+
+deb http://pkg.jenkins-ci.org/debian binary/

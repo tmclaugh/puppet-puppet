@@ -1,0 +1,109 @@
+# $Id$
+
+class svn::server {
+	include apache::httpd
+	include svn::client
+	include svn::viewvc
+
+	$svn_conf = "/etc/httpd/conf.d/subversion.conf"
+	$svn_d = "/etc/httpd/svn.d"
+	$svn_root = "/srv/svn"
+	
+	package { "mod_dav_svn":
+		ensure => installed,
+		require => [Class["svn::client"], Class["apache::httpd"]]
+	}
+
+	file { $svn_conf :
+		owner => root,
+		group => root,
+		mode => 644,
+		require => Package["mod_dav_svn"],
+		notify => Service["httpd_service"]
+	}
+
+	file { $svn_d :
+		ensure => directory,
+		owner => root,
+		group => root,
+		mode => 755,
+		require => Package["mod_dav_svn"]
+	}
+
+	file { $svn_root :
+		ensure => directory,
+		owner => root,
+		mode => 0755
+	}
+
+	append_if_no_match { "include_svn.d" :
+		file => $svn_conf,
+		line => "Include svn.d/*.conf",
+		match => "Include svn.d/\*.conf",
+		require => File["$svn_conf"],
+		notify => Service["httpd_service"]
+	}
+
+
+}
+
+define svn::server::repo ($description, $private=true, $svn_authz=false, $svn_authz_read=false, $sslonly=true, $restriction=false) {
+
+	$svn_root = $svn::server::svn_root
+	$svn_d = $svn::server::svn_d
+	$path = $name
+	exec { "repo_create_${name}" :
+		command => "svnadmin create ${svn_root}/${name}",
+		# XXX: Does not work since account's shell is nologin.
+		#user => apache,
+		unless => "test -d ${svn_root}/${name}",
+		require => File["$svn_root"],
+	}
+
+	file { "${svn_root}/${name}" :
+		ensure => directory,
+		owner => apache,
+		group => apache,
+		mode => 750,
+		require => Exec["repo_create_${name}"]
+	}
+
+	file { "${svn_root}/${name}_contents" :
+		name => "${svn_root}/${name}",
+		owner => apache,
+		group => apache,
+		recurse => true,
+		require => File["${svn_root}/${name}"]
+	}
+
+	file { "${svn_d}/${name}.conf" :
+		owner => root,
+		group => root,
+		mode => 644,
+		content => template("svn/repo.conf.erb"),
+		require => File["${svn_root}/${name}"],
+		notify => Service["httpd_service"]
+	}
+
+	exec { "viewvc_${name}" :
+		command => "sed -i '/^svn_roots = */a \\ ${name}: ${svn_root}/${name},' /etc/viewvc/viewvc.conf",
+		unless => "grep -E '^ ${name}: ${svn_root}/${name}' /etc/viewvc/viewvc.conf",
+		require => Class["svn::viewvc"]
+	}
+}
+
+
+# Useful for restricting access to files within a repo.
+define svn::server::repo_restriction ($path, $description, $private=true, $svn_authz=false, $svn_authz_read=false, $sslonly=true, $restriction=true) {
+	$svn_root = $svn::server::svn_root
+	$svn_d = $svn::server::svn_d
+	
+	file { "${svn_d}/${name}.conf" :
+		owner => root,
+		group => root,
+		mode => 644,
+		content => template("svn/repo.conf.erb"),
+		notify => Service["httpd_service"]
+	}
+		
+}

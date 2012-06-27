@@ -1,0 +1,19 @@
+# $Id$
+
+class straycat::os::linux::opt ($prefix) {
+	file { "$prefix" :
+		ensure => directory,
+		owner => root,
+		group => root,
+		mode => 775,
+	}
+	
+	file { "${prefix}/bin" :
+		ensure => directory,
+		owner => root,
+		group => root,
+		mode => 775,
+		require => File["${prefix}"]
+	}
+
+}

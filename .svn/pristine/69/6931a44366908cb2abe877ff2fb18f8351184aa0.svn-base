@@ -1,0 +1,87 @@
+# Infrastructure parameters go here!
+#
+# $Id$
+
+# LDAP related
+# XXX: If a host variable is added or removed make sure to update
+# $ldap_nss_uri!
+class straycat::params {
+	# Auth
+	# NOTE: Can't use 'wheel' as admins group name since its GID varies
+	# across *nixes.
+	$admingroup = "admins"
+	$usergroup = "users"
+
+	# straycat Info
+	$sc_adm_grp = "scadmins"
+	$sc_host_ou = "Hosts"
+	
+	# KRB5/AD
+	$adwrkgrp = "STRAYCAT"
+	$krb5realm = "STRAYCAT.DHS.ORG"
+	$dns_domain = "straycat.dhs.ORG"
+	$kdc_list = ["kdc0.straycat.dhs.org", "kdc1.straycat.dhs.org", "kdc2.straycat.dhs.org"]
+	$kadminsrv = "kadmin.straycat.dhs.org"
+	#$ad_join_user = "nss_ldap"
+	#$ad_join_pass = $ldap_bindpw
+	
+	#LDAP
+	$ldap = "ldap.straycat.dhs.org"
+	$ldap1 = "ldap1.straycat.dhs.org"
+	$ldap2 = "ldap2.straycat.dhs.org"
+	$ldap3 = "ldap0.straycat.dhs.org"
+	
+	$ldap_nss_uri = "ldap://${ldap1} ldap://${ldap2} ldap://${ldap3}"
+	$ldap_base = "dc=straycat,dc=dhs,dc=org"
+	$ldap_base_users = "ou=users,${ldap_base}"
+	$ldap_base_groups = "ou=groups,${ldap_base}"
+	$ldap_binddn = "cn=nss_ldap,ou=Services,dc=straycat,dc=dhs,dc=org"
+	$ldap_bindpw = "NSSProxyUser"
+	
+	# Mail (Sendmail & Postfix)
+	$mail_host = "mail.straycat.dhs.org"
+	
+	# Monitoring
+	$mon_host = "nagios.straycat.dhs.org"
+	$snmp_ro_comm = "SNMPROComStr!"
+	
+	# NTP
+	$ntp_server = "time.straycat.dhs.org"
+
+	# /opt prefix
+	$opt_prefix = "/opt/straycat" 
+	
+	# PKI
+	$pki_straycatca = "/etc/pki/tls/certs/straycat.crt"
+	
+	# Puppet env.
+	$puppethost_prod = "puppet.straycat.dhs.org"
+	$puppetport_prod = "8140"
+	$puppethost_stage = "puppet-stage.straycat.dhs.org"
+	$puppetport_stage = "8140"
+	$puppethost_trunk = "puppet-trunk.straycat.dhs.org"
+	$puppetport_trunk = "8140"
+	
+	# Set $puppet{server,port} based on who we're taling to.
+	if $::servername == $puppethost_prod {
+		$puppethost = $puppethost_prod
+		$puppetport = $puppetport_prod
+	} elsif $::servername == $puppethost_stage {
+		$puppethost = $puppethost_stage
+		$puppetport = $puppetport_stage
+	} elsif $::servername == $puppethost_trunk {
+		$puppethost = $puppethost_trunk
+		$puppetport = $puppetport_trunk
+	} else {
+		notify{"Unknown puppet enviornment!":}
+	}
+	
+	# Spacewalk
+	# NOTE: This needs to be a shortname because or OSAD won't work.  Since
+	# the server's hostname is a shortname the SSL cert registers only the
+	# shortname.
+	$spacewalk_host = "spacewalk"
+	$spacewalk_centos_5_x86_64 = "..."
+	$spacewalk_centos_6_x86_64 = "1-c78d8add9cafe89ffe2508b95906b9d0,1-5d816d8f1ad891797f5c0c987f9a762b"
+	
+}

@@ -1,0 +1,21 @@
+# $Id$
+
+class snmp::snmpd ($mon_host, $snmp_ro_comm) {
+	package { "net-snmp" :
+		ensure => installed,
+	}
+	
+	file { "/etc/snmp/snmpd.conf" :
+		owner => "root",
+		group => "root",
+		mode => 644,
+		content => template("snmp/snmpd.conf.erb"),
+		require => Package["net-snmp"],
+	}
+
+	service { "snmpd" :
+		enable => true,
+		ensure => true,
+		subscribe => File["/etc/snmp/snmpd.conf"],
+	}
+}

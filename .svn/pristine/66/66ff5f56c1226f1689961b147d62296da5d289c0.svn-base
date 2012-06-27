@@ -1,0 +1,113 @@
+#!/bin/sh
+#
+# $Id$
+#
+# Set hostname and then call puppet if we're root and hostname is not
+# yet set.
+
+FIRSTBOOT="/.bootstrap"
+KRB5REALM="STRAYCAT.DHS.ORG"
+
+# Ask for user input.
+#
+#    $1    = the question to ask the user
+#    $2    = the default answer
+#
+# Save the user input (or the default) in $resp.
+#
+# Allow the user to escape to shells ('!') or execute commands
+# ('!foo') before entering the input.
+ask() {
+	local _question="$1" _default="$2"
+
+	set -o noglob
+	while :; do
+		echo -n "$_question "
+		if [ ! -z $_default ]; then
+			echo -n "[$_default] "
+		fi
+		read resp
+		case $resp in
+		!)	echo "Type 'exit' to return to install."
+			sh
+			;;
+		!*)	eval ${resp#?}
+			;;
+		*)	: ${resp:=$_default}
+			break
+			;;
+		esac
+	done
+	set +o noglob
+}
+
+# Ask the user for a y or n, and insist on 'y', 'yes', 'n' or 'no'.
+#
+#    $1    = the question to ask the user
+#    $2    = the default answer (assumed to be 'n' if empty).
+#
+# Return 'y' or 'n' in $resp.
+ask_yn() {
+	local _q="$1" _a="${2:-no}" _resp
+	#typeset -l _resp
+
+	while :; do
+		ask "$_q" "$_a"
+		_resp=$resp
+		case $_resp in
+		y|yes)  resp=y ; return 0 ;;
+		n|no)   resp=n ; return 1 ;;
+		esac
+	done
+}
+
+if [ "$UID" = "0" -a -f $FIRSTBOOT ]; then
+	# XXX: Disable nss_ldap for the time being.  It's not configured
+	# OOB and trying to get nss_ldap setup via puppet before
+	# anything else was too hard.
+	authconfig --disableldap --disablecache --update
+
+	# Set hostname
+	sh /opt/straycat/bin/set_hostname.sh
+
+	# Expand LVM if needed
+	sh /opt/straycat/bin/autopartexpand.sh
+
+	# Automatically figure assign hosts puppet-trunk* or
+	# puppet-staging* to the correct enviornment.
+	h=$(hostname)
+	if [ "X${h##puppet-trunk*}" = "X" ]; then
+		puppetserver="puppet-trunk.straycat.dhs.org"
+		puppetport="8140"
+		echo "Using trunk puppet enviornment"
+	elif [ "X${h##puppet-stage*}" = "X" ]; then
+		puppetserver="puppet-stage.straycat.dhs.org"
+		puppetport="8140"
+		echo "Using staging puppet environment"
+	else
+		puppetserver="puppet.straycat.dhs.org"
+		puppetport="8140"
+		echo "Using production puppet enviornment"
+	fi
+
+	# We need to get custom facts.  Don't care too much about making
+	# sure this is in the [agent] section since in the default file
+	# it's the last section or about formating.  We'll overwrite
+	# this file anyways.  We also can't include puppet::client
+	# in our bootstrap phase because that will setup puppet before
+	# we know which puppet server to talk to.
+	echo "pluginsync = true" >> /etc/puppet/puppet.conf
+
+	# XXX: Add error checking at some point to make sure we talked
+	# to puppet and registered.
+	puppet agent --server $puppetserver --masterport $puppetport -t --logdest /var/log/puppet/agent.log
+
+	# XXX: We can't update packages till after Puppet runs because
+	# that is what joins us to spacewalk and enables the repos we
+	# use.
+	if ask_yn "Update software packages?" "yes"; then
+		yum -y update
+	fi
+	
+	rm $FIRSTBOOT
+fi

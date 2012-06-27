@@ -1,0 +1,24 @@
+# $Id$
+
+# A node should not include apache::httpd!!!  Include
+# apache::site{,::custom} instead!.
+class apache::httpd {
+	package { "httpd" :
+		ensure => installed,
+	}
+
+# XXX: We will not be managing this file for the time being.
+#	file { "/etc/httpd/conf/httpd.conf" :
+#	}
+
+	service { "httpd_service" :
+		name => "httpd",
+		enable => true,
+		ensure => true,
+		hasrestart => true,
+		# XXX: Restart does a kill and then a start so there is
+		# a blip in service.
+		restart => "/etc/init.d/httpd graceful",
+		subscribe => Package["httpd"],
+	}
+}

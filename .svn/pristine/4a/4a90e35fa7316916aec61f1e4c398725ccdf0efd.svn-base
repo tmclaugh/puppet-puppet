@@ -1,0 +1,7 @@
+# $Id$
+
+class nagios::client {
+	package { "nagios-plugins-all" :
+		ensure => installed,
+	}
+}

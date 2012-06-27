@@ -1,0 +1,9 @@
+# $Id$
+
+define apache::module () {
+	package { "${name}" :
+		ensure => "installed",
+		require => Package["httpd"],
+		notify => Service["httpd_service"]
+	}
+}
