@@ -1,5 +1,0 @@
-# $Id$
-
-class sendmail::params {
-	$sendmail_mc = "/etc/mail/sendmail.mc"
-}

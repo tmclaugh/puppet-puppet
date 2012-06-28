@@ -1,5 +1,0 @@
-# $Id$
-
-class straycat::env::prod {}
-class straycat::env::stage {}
-class straycat::env::dev {}

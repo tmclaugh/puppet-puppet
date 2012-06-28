@@ -1,9 +1,0 @@
-# $Id$
-#
-# This file is centrally managed via puppet.
-
-NameVirtualHost <%= named_vhost_addr %>:80
-
-# SSL
-NameVirtualHost <%= named_vhost_addr %>:443
-
