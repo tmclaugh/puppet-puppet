@@ -2,6 +2,9 @@
 # XXX: A puppet server also shares /etc/puppet via NFS for use in
 # automated installs.  That setup needs to be added.
 
+# XXX: We need to create an ssh key for root so that it can checkout
+# the repo.
+
 class puppet::server {
 	package { "puppet-server" :
 		ensure => "present",	
