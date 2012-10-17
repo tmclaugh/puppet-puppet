@@ -1,5 +1,4 @@
-
-class puppet::client ($host, $port) {
+class puppet::client ($host, $port=8140) {
 
 	package { "puppet" :
 		ensure => present
