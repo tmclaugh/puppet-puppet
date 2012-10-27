@@ -6,6 +6,14 @@
 # the repo.
 
 class puppet::server {
+	file { "/etc/puppet/puppet.conf" :
+		owner => "root",
+		group => "root",
+		mode => 644,
+		require => Package["puppet"],
+		source => "puppet:///modules/puppet/puppet.conf-server"
+	}
+
 	package { "puppet-server" :
 		ensure => "present",	
 	}
