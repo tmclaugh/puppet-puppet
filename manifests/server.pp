@@ -49,13 +49,13 @@ class puppet::server {
 	# as a non-puppet controlled enviornment.
 	# service { "puppetmaster" :}
 
-	cron { "puppet_update_nodes" :
-		command => "svn up /etc/puppet/manifests/nodes",
-		minute => "*/5",
-	}
+	#cron { "puppet_update_nodes" :
+	#	command => "svn up /etc/puppet/manifests/nodes",
+	#	minute => "*/5",
+	#}
 
 	cron { "puppet_update" :
-		command => "svn up /etc/puppet",
+		command => "cd /etc/puppet && ( /usr/bin/git pull ; /usr/bin/git submodule init ; /usr/bin/git submodule update ) | grep -v 'Already up-to-date.",
 		# Update every ten minutes but off by one so we don't
 		# collide with node update.
 		minute => [1, 11, 21, 31, 41, 51],
