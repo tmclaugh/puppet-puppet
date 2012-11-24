@@ -40,6 +40,6 @@ class puppet::rack {
 		# XXX: At some point we should manage the CA related stuff but
 		# we don't right now.  start/stop puppetmaster and CA info will
 		# be generated and files will exist.
-		source => template("puppet/rack.conf.erb")
+		content => template("puppet/rack.conf.erb")
 	}
 }
