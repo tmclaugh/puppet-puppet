@@ -11,7 +11,7 @@ class puppet::server {
 		group => "root",
 		mode => 644,
 		require => Package["puppet"],
-		source => "puppet:///modules/puppet/puppet.conf-server"
+		content => template("puppet/puppet.conf-server.erb")
 	}
 
 	package { "puppet-server" :
@@ -54,6 +54,13 @@ class puppet::server {
 	#	minute => "*/5",
 	#}
 
+    # XXX: uppet clone will be done at a node level.  will check for
+    # /etc/puppet/.git, if not exist, delete directory, and then clone.
+    # Looks like we'll still need to use cron for updates though and need to
+    # fix the command below.   
+
+    # XXX: This doesn't work befow because the pull doesn't know what branch
+    # to use.
 	cron { "puppet_update" :
 		command => "cd /etc/puppet && ( /usr/bin/git pull ; /usr/bin/git submodule init ; /usr/bin/git submodule update ) | grep -v 'Already up-to-date.",
 		# Update every ten minutes but off by one so we don't

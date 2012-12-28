@@ -10,7 +10,7 @@ class puppet::client ($host, $port=8140) {
 			group => "root",
 			mode => 644,
 			require => Package["puppet"],
-			source => "puppet:///modules/puppet/puppet.conf"
+			content => template("puppet/puppet.conf.erb")
 
 		}
 	}
