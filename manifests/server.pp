@@ -5,7 +5,7 @@
 # XXX: We need to create an ssh key for root so that it can checkout
 # the repo.
 
-class puppet::server {
+class puppet::server ($host=$::fqdn, $port=8140) {
 	file { "/etc/puppet/puppet.conf" :
 		owner => "root",
 		group => "root",
